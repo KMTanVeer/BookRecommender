@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Recommend Books — My Book Recommender</title>
+  <meta name="description" content="Recommend page — ask for book recommendations." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+
+  <!-- Your original CSS preserved -->
+ <style>
+/* Colorful glassmorphism stylesheet — responsive and modern */
+:root{
+  --bg-1: #0f1724; /* deep navy */
+  --accent-1: #7c5cff; /* purple */
+  --accent-2: #00d4ff; /* cyan */
+  --accent-3: #ff7ab6; /* pink */
+  --glass-bg: rgba(255,255,255,0.06);
+  --glass-border: rgba(255,255,255,0.12);
+  --text: #e6eef8;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  color:var(--text);
+  background: radial-gradient(1200px 600px at 10% 10%, rgba(124,92,255,0.12), transparent),
+              radial-gradient(1000px 500px at 90% 90%, rgba(0,212,255,0.08), transparent),
+              linear-gradient(180deg,var(--bg-1), #081023 70%);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  padding-bottom:4rem;
+  min-height:100vh;
+}
+
+.container{max-width:1100px;margin:0 auto;padding:1rem}
+
+/* Background decorative blobs */
+.bg-blobs{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0.9}
+.bg-blobs::before, .bg-blobs::after{content:"";position:absolute;border-radius:50%;filter:blur(80px);}
+.bg-blobs::before{width:520px;height:520px;left:-120px;top:-60px;background:linear-gradient(45deg,var(--accent-1),var(--accent-3));opacity:0.9}
+.bg-blobs::after{width:420px;height:420px;right:-80px;bottom:-40px;background:linear-gradient(45deg,var(--accent-2),var(--accent-1));opacity:0.85}
+
+/* Header */
+.site-header{position:sticky;top:0;padding:0.15rem 0;backdrop-filter: blur(8px);z-index:40}
+.header-inner{display:flex;align-items:center;justify-content:space-between;min-height:48px}
+.brand{font-weight:700;color:var(--text);text-decoration:none;font-size:1.0rem}
+/* Ensure nav items sit side-by-side and are compact */
+#nav{display:flex;gap:0.5rem;align-items:center}
+#nav a{color:var(--text);text-decoration:none;padding:0.25rem 0.5rem;border-radius:6px;transition:all .15s;font-size:0.95rem}
+#nav a:hover{transform:translateY(-2px);background:linear-gradient(90deg,rgba(255,255,255,0.03),rgba(255,255,255,0.02));}
+#nav-toggle{display:none;background:none;border:0;color:var(--text);font-size:1.15rem}
+/* Make sure the ul.nav is horizontal */
+.nav.navbar-nav{display:flex;gap:0.5rem;align-items:center;margin:0;padding:0;list-style:none}
+.nav-item{display:block}
+.nav-link{display:block;padding:0.25rem 0.5rem}
+
+/* Hero */
+.hero{padding:3.5rem 0;position:relative;z-index:10}
+.hero-inner{display:flex;gap:2rem;align-items:center}
+.hero .glass{padding:2rem;border-radius:16px}
+.hero-content{flex:1}
+.hero h1{margin:0 0 .6rem;font-size:clamp(1.6rem,3vw,2.6rem);line-height:1.05}
+.lead{opacity:0.95;color:rgba(230,238,248,0.92);margin-bottom:1rem}
+.hero-ctas{display:flex;gap:0.75rem}
+.btn{display:inline-block;padding:.6rem 1rem;border-radius:10px;text-decoration:none;border:1px solid transparent;font-weight:600;cursor:pointer}
+.btn.primary{background:linear-gradient(90deg,var(--accent-1),var(--accent-2));color:#061423;box-shadow:0 6px 18px rgba(0,0,0,0.35);}
+.btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--text)}
+
+.hero-preview{width:48%;min-width:280px}
+.preview-card{overflow:hidden;border-radius:12px}
+.preview-card img{width:100%;height:auto;display:block}
+
+/* Glass base */
+.glass{background:var(--glass-bg);border:1px solid var(--glass-border);box-shadow:0 8px 30px rgba(2,6,23,0.6);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.p-lg{padding:1.5rem}
+.section{padding:2rem 0}
+.section-title{margin:0 0 1rem;font-size:1.25rem}
+
+/* Features grid */
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.card{padding:1rem;border-radius:12px}
+.hoverable{transition:transform .25s ease, box-shadow .25s ease}
+.hoverable:hover{transform:translateY(-8px) rotateX(2deg);box-shadow:0 20px 40px rgba(2,6,23,0.6)}
+
+/* Demo grid */
+.demo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1rem}
+.mini-card{padding:1rem;border-radius:10px;text-align:center}
+
+/* Contact */
+.contact-grid{display:grid;grid-template-columns:1fr 320px;gap:1rem;align-items:start}
+.contact-form label{display:block;margin-bottom:.6rem}
+.contact-form input,.contact-form textarea{width:100%;padding:.6rem;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:var(--text)}
+.form-actions{display:flex;gap:.5rem;margin-top:.6rem}
+
+.site-footer{position:fixed;left:0;right:0;bottom:0;padding:.12rem 0;background:linear-gradient(180deg,transparent,rgba(4,7,14,0.6));backdrop-filter:blur(6px);z-index:45}
+.footer-inner{display:flex;justify-content:space-between;align-items:center;gap:1rem;font-size:0.85rem;padding:0 .75rem}
+.footer-inner p{margin:0;line-height:1}
+.footer-nav a{color:var(--text);text-decoration:none;margin-left:0.5rem;padding:0.12rem 0.35rem}
+
+/* Responsive */
+@media (max-width:900px){
+  .hero-inner{flex-direction:column}
+  .hero-preview{width:100%}
+  .features-grid{grid-template-columns:repeat(2,1fr)}
+  .demo-grid{grid-template-columns:repeat(2,1fr)}
+  .contact-grid{grid-template-columns:1fr}
+}
+@media (max-width:600px){
+  /* Keep nav visible and slim on small screens; hide toggle */
+  #nav{display:flex}
+  #nav-toggle{display:none}
+  .features-grid{grid-template-columns:1fr}
+  .demo-grid{grid-template-columns:1fr}
+  .hero{padding:2rem 0}
+}
+
+/* Small accessibility helpers */
+a:focus{outline:2px dashed rgba(255,255,255,0.12);outline-offset:3px}
+
+/* Subtle focus/glow for primary button */
+.btn.primary:focus{box-shadow:0 8px 30px rgba(124,92,255,0.18)}
+
+/* Book cards integration (works with Bootstrap classes) */
+.book-card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:0;overflow:hidden;transition:transform .28s cubic-bezier(.2,.9,.2,1), box-shadow .28s ease, opacity .35s ease;will-change:transform,opacity}
+.book-card .card-body{padding:0.6rem 0.7rem}
+.card-img-top{width:100%;height:160px;object-fit:cover;border-radius:6px}
+.book-card:hover{transform:translateY(-10px) scale(1.01);box-shadow:0 28px 60px rgba(2,6,23,0.6)}
+.text-white{color:var(--text)}
+
+/* New responsive books grid (compact card layout) */
+.books-grid{display:grid;gap:1rem;grid-auto-rows:1fr;padding:0;margin:0}
+/* Enforce 5 cards per row on typical desktop widths */
+.books-grid{grid-template-columns:repeat(5, minmax(150px,1fr))}
+
+/* Slightly smaller screens -> 4 columns */
+@media (max-width:1100px){
+  .books-grid{grid-template-columns:repeat(4, minmax(140px,1fr))}
+}
+
+/* Tablet -> 3 columns */
+@media (max-width:800px){
+  .books-grid{grid-template-columns:repeat(3, minmax(120px,1fr))}
+}
+
+/* Small phones -> 2 columns */
+@media (max-width:520px){
+  .books-grid{grid-template-columns:repeat(2, minmax(110px,1fr))}
+}
+
+/* Ensure images remain proportional on small screens */
+@media (max-width:600px){
+  .card-img-top{height:140px}
+}
+
+/* Reveal animation: starts slightly down and transparent, becomes visible when in view */
+.reveal{opacity:0;transform:translateY(12px) scale(0.995);transition:opacity .5s ease, transform .5s cubic-bezier(.2,.9,.2,1)}
+.reveal.visible{opacity:1;transform:translateY(0) scale(1)}
+
+/* Small text tweaks inside cards */
+.book-meta{font-size:0.85rem;margin-top:0.35rem;opacity:1}
+.book-title{font-weight:700;margin:0;font-size:0.98rem;color:var(--text);line-height:1.15;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;text-overflow:ellipsis}
+.book-author{font-weight:500;color:rgba(230,238,248,0.82);margin:0;margin-top:0.18rem}
+.book-votes{font-size:0.82rem;color:rgba(230,238,248,0.82);font-weight:600;margin-top:0.35rem}
+.book-rating{font-size:0.86rem;color:var(--accent-2);font-weight:700;margin-top:0.18rem}
+
+/* Center content inside card body for consistent layout */
+.book-card .card-body{padding:0.6rem 0.7rem;text-align:center}
+
+/* Small rating star color hint (if you render a star) */
+.book-stats .star{color:var(--accent-3);margin-right:6px}
+
+/* Navbar tweaks to match the simplified layout */
+.navbar-brand{font-weight:700;color:var(--text);text-decoration:none}
+.nav .nav-link{color:var(--text);padding:0.35rem 0.6rem;border-radius:8px}
+.nav .nav-link:hover{background:rgba(255,255,255,0.025)}
+
+/* Small responsive fix for the book columns on very small screens */
+@media (max-width:520px){
+  .card-img-top{height:200px}
+  .book-card .card-body{font-size:0.95rem}
+}
+
+</style>
+</head>
+<body>
+ <div class="bg-blobs" aria-hidden="true"></div>
+
+  <header class="site-header" role="banner">
+    <div class="container header-inner">
+      <a class="navbar-brand" href="#">My Book recommender</a>
+      <button id="nav-toggle" aria-label="Toggle navigation">☰</button>
+      <nav id="nav">
+        <ul class="nav navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="/recommend">Recommend</a></li>
+          <li class="nav-item"><a class="nav-link" href="/contact">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+ <main>
+    <section class="section container" aria-labelledby="recommend-title">
+      <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="text-white" style="font-size:40px">Recommend Books</h1>
+                <!-- keep form same as working simple template -->
+                <form action="/recommend_books" method="post" class="mb-3">
+                    <input name="user_input" type="text" class="form-control" placeholder="Enter a book or author">
+                    <br>
+                    <input type="submit" class="btn primary btn-lg" value="Get Recommendations">
+                </form>
+            </div>
+        </div>
+
+        <!-- Server-rendered results using your working list-of-lists shape -->
+        <div class="row">
+          {% if data %}
+            {% for i in data %}
+              <div class="col-md-3" style="margin-top:24px">
+                <article class="card book-card glass hoverable reveal">
+                  <img class="card-img-top" src="{{ i[2] or 'data:image/gif;base64,R0lGODlhAQABAAAAACw=' }}" alt="{{ i[0] or 'cover' }} cover">
+                  <div class="card-body">
+                    <p class="book-title text-white">{{ i[0] or '—' }}</p>
+                    <p class="book-author text-white">{{ i[1] or '—' }}</p>
+                  </div>
+                </article>
+              </div>
+            {% endfor %}
+          {% else %}
+            <div class="col-12" style="margin-top:12px">
+              <p class="text-white">No recommendations yet. Try entering a book and click <strong>Get Recommendations</strong>.</p>
+            </div>
+          {% endif %}
+        </div>
+
+      </div>
+    </section>
+ </main>
+
+  <footer class="site-footer" role="contentinfo" style="margin-top:2rem">
+    <div class="container footer-inner">
+      <p>© <span id="year"></span> Friends. All rights reserved</p>
+      <nav class="footer-nav" aria-label="Footer navigation">
+        <a href="https://www.linkedin.com/in/kawsartanveer/">Contact</a>
+      </nav>
+    </div>
+  </footer>
+<script>
+  // Minimal JS for nav toggle and small interactions
+  document.addEventListener('DOMContentLoaded', ()=>{
+    // year in footer
+    const y = new Date().getFullYear();
+    const yearEl = document.getElementById('year');
+    if(yearEl) yearEl.textContent = y;
+
+    // mobile nav toggle
+    const nav = document.getElementById('nav');
+    const toggle = document.getElementById('nav-toggle');
+    if(toggle && nav){
+      toggle.addEventListener('click', ()=>{
+        if(nav.style.display === 'flex') nav.style.display = '';
+        else nav.style.display = 'flex';
+      });
+    }
+
+    // simple contact form handler (placeholder)
+    const form = document.getElementById('contact-form');
+    if(form){
+      form.addEventListener('submit', (e)=>{
+        e.preventDefault();
+        alert('Thanks! This is a demo contact form. Replace with your handler or mailto link.');
+        form.reset();
+      });
+    }
+
+    // Scroll-reveal animation for book cards
+    (function(){
+      const revealItems = document.querySelectorAll('.reveal');
+      if(!revealItems || revealItems.length === 0) return;
+
+      if('IntersectionObserver' in window){
+        const io = new IntersectionObserver((entries, observer) => {
+          entries.forEach(entry => {
+            if(entry.isIntersecting){
+              entry.target.classList.add('visible');
+              // optional: unobserve so animation doesn't re-run
+              observer.unobserve(entry.target);
+            }
+          });
+        }, {root:null, rootMargin:'0px 0px -6% 0px', threshold: 0.12});
+
+        revealItems.forEach((el, idx) => {
+          // slight stagger for nicer effect
+          el.style.transitionDelay = (idx % 6) * 60 + 'ms';
+          io.observe(el);
+        });
+      } else {
+        // fallback for older browsers
+        revealItems.forEach(el => el.classList.add('visible'));
+      }
+    })();
+  });
+  </script>
+
+</body>
+</html>
